@@ -7,5 +7,10 @@
             "local_path": "index.html"
         }
     },
-    "permissions": ["http://*", "https://*", "unlimitedStorage", "notifications", "management"]
+    "permissions": [
+      "http://*/",
+      "https://*/",
+      "unlimitedStorage",
+      "notifications",
+      "management"]
 }

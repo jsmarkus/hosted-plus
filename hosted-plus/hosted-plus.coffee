@@ -1,24 +1,42 @@
 class HostedApp
   
-  constructor: (@host, @options) ->
+  constructor: (@options) ->
   
   boot: () ->
     if @options.js?
-      jsfull = (@host + js for js in @options.js)
-      console.log jsfull
+      jsfull = (@options.host + js for js in @options.js)
       head.js.apply head, jsfull
-    head.ready @options.onLoad if @options.onLoad?
-    @addCss (@options.css) if @options.css?
+      head.ready @options.onLoad if @options.onLoad?
+
+    if @options.css?
+      cssfull = (@options.host + css for css in @options.css)
+      @addCss (cssfull)
     
   addCss: (css) ->
     css = [css] if 'string' is typeof css
-    for item in css
-      console.log "CSS #{item} loading"
 
+    head = document.getElementsByTagName('head')[0]
+    
+    inject = (cssfile) ->
+      link=document.createElement("link")
+      link.setAttribute(name, val) for name, val of {
+        rel: 'stylesheet'
+        type: 'text/css'
+        href: cssfile}
+      head.appendChild link
 
-hst = new HostedApp 'http://ajax.googleapis.com/' 
-  js : ['ajax/libs/jquery/1.6/jquery.min.js']
-  css : ['d', 'e']
+    inject style for style in css
 
-#hst.addCss ['bla','asd']
-hst.boot();
+HostedApp.remote = (url, cb) ->
+  xhr = new XMLHttpRequest
+  xhr.open 'GET', url
+  xhr.onreadystatechange = () ->
+    if xhr.readyState == 4
+      if xhr.status == 200
+        opts = JSON.parse xhr.responseText
+        app = new HostedApp(opts)
+        cb app
+  xhr.send()
+
+HostedApp.remote 'https://raw.github.com/jsmarkus/hosted-plus/master/hosted-plus/example/config.json', (app) ->
+  app.boot()
