@@ -1,0 +1,11 @@
+{
+    "name": "hosted-plus app",
+    "description": "hosted-plus app",
+    "version": "0.0.1",
+    "app": {
+        "launch": {
+            "local_path": "index.html"
+        }
+    },
+    "permissions": ["http://*", "https://*", "unlimitedStorage", "notifications", "management"]
+}
