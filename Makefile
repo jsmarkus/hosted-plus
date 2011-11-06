@@ -20,5 +20,5 @@ chrome-app:
 		$(CHROME) 	--pack-extension=$(APP_LOCAL_DIR); \
 	fi
 
-install: all
+install:
 	$(CHROME) $(APP_LOCAL_CRX)
