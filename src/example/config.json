@@ -1,0 +1,5 @@
+{
+  "host" : "http://dl.dropbox.com/u/11123104/example-host/",
+  "js" : ["https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js", "test.js"],
+  "css" : ["test.css"]
+}

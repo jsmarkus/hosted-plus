@@ -1,24 +1,30 @@
 CHROME = chromium-browser
-APP_NAME = hosted-plus
-APP_LOCAL_DIR = $(APP_NAME)
-APP_LOCAL_KEY = $(APP_NAME).pem
-APP_LOCAL_CRX = $(APP_NAME).crx
+APP_NAME := $(shell basename `pwd`)
+SRC_DIR = src
 
+APP_PEM = $(APP_NAME).pem
+APP_CRX = $(APP_NAME).crx
+
+TMP_PEM  = $(SRC_DIR).pem
+TMP_CRX  = $(SRC_DIR).crx
 
 all: coffeescript chrome-app
 
 coffeescript: 
-	coffee -c hosted-plus/*.coffee
+	coffee -c $(SRC_DIR)/*.coffee
 
 chrome-app:
-	@if [ -f $(APP_LOCAL_KEY) ]; then \
+	@if [ -f $(APP_PEM) ]; then \
 		echo "## Building app with existig key"; \
-		$(CHROME) 	--pack-extension=$(APP_LOCAL_DIR) \
-					--pack-extension-key=$(APP_LOCAL_KEY); \
+		$(CHROME) 	--pack-extension=$(SRC_DIR) \
+					--pack-extension-key=$(APP_PEM); \
+		mv $(TMP_CRX) $(APP_CRX); \
 	else \
 		echo "## Building app and creating new key"; \
-		$(CHROME) 	--pack-extension=$(APP_LOCAL_DIR); \
-	fi
+		$(CHROME) 	--pack-extension=$(SRC_DIR); \
+		mv $(TMP_CRX) $(APP_CRX); \
+		mv $(TMP_PEM) $(APP_PEM); \
+	fi; \
 
 install:
-	$(CHROME) $(APP_LOCAL_CRX)
+	$(CHROME) $(APP_CRX)
