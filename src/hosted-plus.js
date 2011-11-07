@@ -1,38 +1,30 @@
 (function() {
   var HostedApp;
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   HostedApp = (function() {
     function HostedApp(options) {
       this.setOptions(options);
     }
     HostedApp.prototype.boot = function() {
-      var css, cssfull, js, jsfull;
+      var cssfull, jsfull, paths;
+      paths = __bind(function(files) {
+        var file, _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = files.length; _i < _len; _i++) {
+          file = files[_i];
+          _results.push(file.match(/^http(s)?\:/) ? file : this.host + file);
+        }
+        return _results;
+      }, this);
       if (this.js != null) {
-        jsfull = (function() {
-          var _i, _len, _ref, _results;
-          _ref = this.js;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            js = _ref[_i];
-            _results.push(this.host + js);
-          }
-          return _results;
-        }).call(this);
+        jsfull = paths(this.js);
         head.js.apply(head, jsfull);
         if (this.onLoad != null) {
           head.ready(this.onLoad);
         }
       }
       if (this.css != null) {
-        cssfull = (function() {
-          var _i, _len, _ref, _results;
-          _ref = this.css;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            css = _ref[_i];
-            _results.push(this.host + css);
-          }
-          return _results;
-        }).call(this);
+        cssfull = paths(this.css);
         this.addCss(cssfull);
       }
       return this;

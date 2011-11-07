@@ -4,13 +4,20 @@ class HostedApp
     @setOptions options
 
   boot: () ->
+    paths = (files) =>
+      for file in files
+        if (file.match /^http(s)?\:/)
+          file
+        else
+          @host + file
+          
     if @js?
-      jsfull = ((js.test /^http(s)?\:/ ? js : @host + js) for js in @js)
+      jsfull = paths @js
       head.js.apply head, jsfull
       head.ready @onLoad if @onLoad?
 
     if @css?
-      cssfull = (@host + css for css in @css)
+      cssfull = paths @css
       @addCss (cssfull)
     
     this
@@ -59,7 +66,5 @@ HostedApp.remote = (url, options, cb) ->
   app
 
 window.HostedApp = HostedApp
-#application = HostedApp.remote 'https://raw.github.com/jsmarkus/hosted-plus/master/hosted-plus/example/config.json', {onLoad:->alert 1}, (app) ->
-#  app.boot()
 
 
